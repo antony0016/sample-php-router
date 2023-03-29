@@ -1,0 +1,16 @@
+{
+    "name": "root/sample-router",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "SekiXu\\SampleRouter\\": "src/",
+            "SekiXu\\SampleRouter\\Application\\": "Application/"
+        }
+    },
+    "authors": [
+        {
+            "name": "sekixu"
+        }
+    ],
+    "require": {}
+}
