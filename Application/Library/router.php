@@ -51,6 +51,9 @@ class Router {
         $param_values = [];
         // param keys
         preg_match_all("/\{([a-zA-Z0-9_]+)\}/", $route, $param_keys);
+        if(count($param_keys[0]) === 0){
+            return [];
+        }
         array_shift($param_keys);
         $param_keys = $param_keys[0];
 
@@ -59,6 +62,9 @@ class Router {
         // escape slash in regex
         $regex = str_replace("/", "\/", $regex);
         preg_match_all("/^" . $regex . "$/", $path, $param_values);
+        if(count($param_values[0]) === 0){
+            return [];
+        }
         // shift origin string
         array_shift($param_values);
         $param_values = $param_values[0];
@@ -89,10 +95,16 @@ class Router {
     public static function on($route, $callback):void{
         // split uri to query, path, and params
         $request_uri = $_SERVER["REQUEST_URI"];
-        [$path, $query] = explode("?", $request_uri);
+        $path = "";
+        $query = "";
+        if(strpos($request_uri, "?") === false){
+            $path = $request_uri;
+        }else{
+            [$path, $query] = explode("?", $request_uri);
+        }
         // query
         $queries = [];
-        if($query){
+        if($query != ""){
             $queries = self::get_queries($query);
         }
         // params
