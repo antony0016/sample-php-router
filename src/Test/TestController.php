@@ -23,6 +23,7 @@ class TestController {
             "data" => [
                 "params" => $request->get_params(),
                 "query" => $request->get_queries(),
+                "db_test" => "test"
             ]
         ]);
     }

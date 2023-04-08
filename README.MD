@@ -10,6 +10,12 @@ Run the following command to create the autoload files:
 composer dump-autoload
 ```
 
+Rename the config_sample.php file to config.php and update the database credentials.
+
+```bash
+cp config_sample.php config.php
+```
+
 Use the following command to run the application:
 
 ```bash
