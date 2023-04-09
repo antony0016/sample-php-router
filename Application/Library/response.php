@@ -5,7 +5,7 @@ class Response {
     private $status = 200;
 
     public function status($status=200): Response {
-        $this->$status = $status;
+        $this->status = $status;
         return $this;
     }
 
