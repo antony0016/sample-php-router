@@ -3,15 +3,14 @@ namespace SekiXu\SampleRouter\Application\Library;
 use PDO;
 
 class DB{
-    private $instance;
-    private $connected;
+    private static $instance;
 
-    function __construct($db_connect_string, $username, $password){
-        $this->connected = false;
-        return $this->connect($db_connect_string, $username, $password);
-    }
+    // function __construct($db_connect_string, $username, $password){
+    //     self::connected = false;
+    //     // return self::connect($db_connect_string, $username, $password);
+    // }
 
-    function connect($db_connect_string, $username, $password):false|PDO{
+    static function connect($db_connect_string, $username, $password){
         // phpinfo();
         try {
             $options = [
@@ -19,29 +18,26 @@ class DB{
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // Disable errors in the form of exceptions
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Make the default fetch be an associative array
               ];
-            $this->instance = new PDO($db_connect_string, $username, $password, $options);
+            self::$instance = new PDO($db_connect_string, $username, $password, $options);
         } catch (PDOException $e) {
             // echo $e->getMessage();
             return false;
         }
-        $this->connected = true;
-        return $this->instance;
+        return self::$instance;
     }
 
-    function is_connected(){
-        return $this->connected;
+    static function is_connected(){
+        return self::$instance === null ? false : true;
     }
 
-    function disconnect(){
-        $this->connected = false;
-        unset($this->instance);
+    static function disconnect(){
+        unset(self::$instance);
     }
 
-    function get_instance(){
-        return $this->instance;
-    }
-
-    function __destruct(){
-        $this->disconnect();
+    static function get_instance():false|PDO{
+        if (self::$connected === false){
+            return false;
+        }
+        return self::$instance;
     }
 }
