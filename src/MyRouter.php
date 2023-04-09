@@ -9,7 +9,7 @@ use SekiXu\SampleRouter\helloworld\HelloWorldController;
 class MyRouter {
     public static function register($controllers){
         foreach($controllers as $controller){
-            $routes = $controller::routes();
+            $routes = $controller->routes();
             foreach($routes as $route){
                 switch (strtolower($route["method"])) {
                     case 'get':

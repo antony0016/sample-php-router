@@ -4,12 +4,14 @@ require __DIR__ . '/vendor/autoload.php';
 
 use SekiXu\SampleRouter\Application\Library\Config;
 use SekiXu\SampleRouter\Application\Library\DB;
+use SekiXu\SampleRouter\Application\Library\JWT;
 use SekiXu\SampleRouter\HelloWorld\HelloWorldController;
 use SekiXu\SampleRouter\Test\TestController;
+use SekiXu\SampleRouter\Users\UserController;
 use SekiXu\SampleRouter\MyRouter;
 
 function main(){
-    $db = new DB(
+    $db = DB::connect(
         Config::get("DB_CONNECT_STRING"),
         Config::get("DB_USERNAME"),
         Config::get("DB_PASSWORD")
@@ -18,9 +20,11 @@ function main(){
         echo 'Database connection failed';
         return;
     }
+    JWT::set_secret(Config::get("JWT_SECRET"));
     MyRouter::register([
-        HelloWorldController::class,
-        TestController::class,
+        // new HelloWorldController($db),
+        new TestController($db),
+        new UserController($db),
     ]);
 }
 
