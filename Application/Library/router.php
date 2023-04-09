@@ -32,7 +32,7 @@ class Router {
     }
 
     public static function delete($route, $callback):void{
-        if(strcasecmp($_SERVER["REQUEST_METHOD"], "PUT") != 0){
+        if(strcasecmp($_SERVER["REQUEST_METHOD"], "DELETE") != 0){
             return;
         }
 
