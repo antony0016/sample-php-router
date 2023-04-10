@@ -3,8 +3,9 @@ namespace SekiXu\SampleRouter\HelloWorld;
 
 use SekiXu\SampleRouter\Application\Library\Request;
 use SekiXu\SampleRouter\Application\Library\Response;
+use SekiXu\SampleRouter\Application\Library\Controller;
 
-class HelloWorldController {
+class HelloWorldController extends Controller{
 
     public static function routes(){
         return [

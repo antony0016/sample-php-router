@@ -3,15 +3,10 @@ namespace SekiXu\SampleRouter\Test;
 
 use SekiXu\SampleRouter\Application\Library\Request;
 use SekiXu\SampleRouter\Application\Library\Response;
+use SekiXu\SampleRouter\Application\Library\Controller;
 use SekiXu\SampleRouter\Application\Library\DB;
 
-class TestController {
-
-    private $db;
-
-    public function __construct($db){
-        $this->db = $db;
-    }
+class TestController extends Controller{
 
     public function routes(){
         return [

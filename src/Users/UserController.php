@@ -3,17 +3,12 @@ namespace SekiXu\SampleRouter\Users;
 
 use SekiXu\SampleRouter\Application\Library\Request;
 use SekiXu\SampleRouter\Application\Library\Response;
+use SekiXu\SampleRouter\Application\Library\Controller;
 use SekiXu\SampleRouter\Application\Library\JWT;
 
 use PDO;
 
-class UserController{
-
-    private PDO $db;
-
-    public function __construct(PDO &$db){
-        $this->db =& $db;
-    }
+class UserController extends Controller{
 
     public function routes(){
         return [
@@ -49,10 +44,12 @@ class UserController{
     }
 
     public function get_all(Request $request, Response $response){
-        $query = $this->db->query("SELECT username FROM users");
+        if($this->pre_verify($request, $response) === false) return;
+        $query = $this->db->query("SELECT id, username FROM users");
         $users = $query->fetchAll();
+        // print_r($_SERVER);
         $response->json([
-            "data" => $users,
+            "data" => $users
         ]);
     }
 

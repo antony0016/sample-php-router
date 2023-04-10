@@ -6,6 +6,9 @@ use SekiXu\SampleRouter\Application\Library\Config;
 use SekiXu\SampleRouter\Application\Library\DB;
 use SekiXu\SampleRouter\Application\Library\JWT;
 use SekiXu\SampleRouter\HelloWorld\HelloWorldController;
+use SekiXu\SampleRouter\Todos\TodoController;
+use SekiXu\SampleRouter\Groups\GroupController;
+use SekiXu\SampleRouter\Groups\ShareController;
 use SekiXu\SampleRouter\Test\TestController;
 use SekiXu\SampleRouter\Users\UserController;
 use SekiXu\SampleRouter\MyRouter;
@@ -25,6 +28,9 @@ function main(){
         // new HelloWorldController($db),
         new TestController($db),
         new UserController($db),
+        new GroupController($db),
+        new ShareController($db),
+        new TodoController($db),
     ]);
 }
 
