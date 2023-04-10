@@ -40,7 +40,7 @@ class Router {
     }
 
     public static function vaild($route, $path):bool{
-        $regex = preg_replace("/\{([a-zA-Z0-9_]+)\}/", "([a-zA-Z0-9_]+)", $route);
+        $regex = preg_replace("/\{([a-zA-Z0-9_-]+)\}/", "([a-zA-Z0-9_-]+)", $route);
         $regex = str_replace("/", "\/", $regex);
         return preg_match("/^" . $regex . "$/", $path);
     }
@@ -50,7 +50,7 @@ class Router {
         $param_keys = [];
         $param_values = [];
         // param keys
-        preg_match_all("/\{([a-zA-Z0-9_]+)\}/", $route, $param_keys);
+        preg_match_all("/\{([a-zA-Z0-9_-]+)\}/", $route, $param_keys);
         if(count($param_keys[0]) === 0){
             return [];
         }
@@ -58,7 +58,7 @@ class Router {
         $param_keys = $param_keys[0];
 
         // param values
-        $regex = preg_replace("/\{([a-zA-Z0-9_]+)\}/", "([a-zA-Z0-9_]+)", $route);
+        $regex = preg_replace("/\{([a-zA-Z0-9_-]+)\}/", "([a-zA-Z0-9_-]+)", $route);
         // escape slash in regex
         $regex = str_replace("/", "\/", $regex);
         preg_match_all("/" . $regex . "/", $path, $param_values);
