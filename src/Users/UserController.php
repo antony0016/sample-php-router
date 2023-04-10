@@ -54,19 +54,19 @@ class UserController extends Controller{
     }
 
     public function register(Request $request, Response $response){
-        $params = $request->get_params();
+        $body = $request->get_body();
         $user = [
-            "username" => $params["username"],
-            "password" => password_hash($params["password"], PASSWORD_BCRYPT),
+            "username" => $body["username"],
+            "password" => password_hash($body["password"], PASSWORD_BCRYPT),
         ];
         $query = $this->db->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
-        if($query->execute($user)){
-            $response->json([
-                "message" => "User registered",
-            ]);
-        } else {
+        if($query->execute($user) === false){
             $response->status(500)->json([
                 "error" => "Failed to register user",
+            ]);
+        } else {
+            $response->json([
+                "message" => "User registered",
             ]);
         }
     }
@@ -86,7 +86,8 @@ class UserController extends Controller{
         } else {
             if(password_verify($body["password"], $user["password"])){
                 $response->json([
-                    "token" => JWT::sign([
+                    "access" => JWT::sign([
+                        "id" => $user["id"],
                         "username" => $user["username"],
                     ]),
                 ]);

@@ -19,7 +19,7 @@ class GroupController extends Controller{
             ],
             [
                 "method" => "GET",
-                "path" => "/groups/{id}",
+                "path" => "/groups/{user_id}",
                 "handler" => function(Request $request, Response $response){
                     $this->get($request, $response);
                 }
@@ -60,9 +60,11 @@ class GroupController extends Controller{
     public function get(Request $request, Response $response){
         if($this->pre_verify($request, $response) == false)return;
         $params = $request->get_params();
-        $id = $params['id'];
-        $query = $this->db->prepare("SELECT * FROM groups WHERE id = :id");
-        if($query->execute(["id" => $id]) == false){
+        $user_id = $params['user_id'];
+        $query = $this->db->prepare(
+            "SELECT groups.id, groups.name, groups.create_by FROM groups left join shares on groups.id = shares.group_id WHERE groups.create_by = :create_by or shares.user_id = :user_id"
+        );
+        if($query->execute(["user_id" => $user_id, "create_by" => $user_id]) == false){
             $response->status(500)->json([
                 "error" => "get group failed",
             ]);

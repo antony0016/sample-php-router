@@ -18,6 +18,13 @@ class TodoController extends Controller{
                 }
             ],
             [
+                "method" => "GET",
+                "path" => "/todos/{group_id}",
+                "handler" => function(Request $request, Response $response){
+                    $this->get($request, $response);
+                }
+            ],
+            [
                 "method" => "POST",
                 "path" => "/todos",
                 "handler" => function(Request $request, Response $response){
@@ -45,15 +52,16 @@ class TodoController extends Controller{
         $query = $this->db->query("SELECT * FROM todos");
         $todos = $query->fetchAll();
         $response->json([
-            "data" => $users,
+            "data" => $todos,
         ]);
     }
 
     public function get(Request $request, Response $response){
-        $id = $request->params["id"];
-        $query = $this->db->prepare("SELECT * FROM todos WHERE id = :id");
-        if($query->execute(["id" => $id]) == false){
-            $response->json([
+        $params = $request->get_params();
+        $group_id = $params["group_id"];
+        $query = $this->db->prepare("SELECT * FROM todos WHERE group_id = :group_id");
+        if($query->execute(["group_id" => $group_id]) == false){
+            $response->status(500)->json([
                 "error" => "get todo failed",
             ]);
             return;
@@ -69,16 +77,19 @@ class TodoController extends Controller{
         $title = $body['title'];
         $group_id = $body['group_id'];
         $create_by = $body['create_by'];
-        // check user in group
-        $query = $this->db->prepare("SELECT * FROM shares WHERE group_id = :group_id or user_id = :user_id"); 
-        if($query->execute(["group_id" => $group_id, "user_id" => $create_by]) == false){
-            $response->json([
-                "error" => "get share failed",
-            ]);
-            return;
+        $condition = ["group_id" => $group_id,"user_id" => $create_by];
+        $in_group = false;
+        // check user is in group or share
+        $query = $this->db->prepare("SELECT * FROM groups WHERE id = :group_id and create_by = :user_id"); 
+        $query->execute($condition);
+        $query2 = $this->db->prepare("SELECT * FROM shares WHERE group_id = :group_id and user_id = :user_id");
+        $query2->execute($condition);
+        if($query->rowCount() > 0 || $query2->rowCount() > 0){
+            $in_group = true;
+        }else{
+            $in_group = false;
         }
-        $shares = $query->fetchAll();
-        if(count($shares) == 0){
+        if($in_group == false){
             $response->status(404)->json([
                 "error" => "user not in group or group not found",
             ]);
@@ -105,7 +116,7 @@ class TodoController extends Controller{
         $completed = $params["completed"] == "1"?1:0; // 0 or 1
         $query = $this->db->prepare("UPDATE todos SET completed = :completed WHERE id = :id");
         if($query->execute(["id" => $id, "completed" => $completed]) == false){
-            $response->json([
+            $response->status(500)->json([
                 "error" => "update todo failed",
             ]);
             return;

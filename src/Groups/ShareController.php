@@ -54,7 +54,9 @@ class ShareController extends Controller{
         if($this->pre_verify($request, $response) == false)return;
         $params = $request->get_params();
         $group_id = $params['group_id'];
-        $query = $this->db->prepare("SELECT * FROM shares WHERE group_id = :group_id");
+        $query = $this->db->prepare(
+            "SELECT shares.id, shares.user_id, shares.group_id, users.username FROM shares left join users on users.id = shares.user_id WHERE group_id = :group_id"
+        );
         if($query->execute(["group_id" => $group_id]) == false){
             $response->status(500)->json([
                 "error" => "get shares failed",
