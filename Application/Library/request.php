@@ -19,10 +19,19 @@ class Request {
     }
 
     public function get_body():array {
-        if($_SERVER["REQUEST_METHOD"] != "POST"){
+        if($_SERVER["REQUEST_METHOD"] != "POST" && $_SERVER["REQUEST_METHOD"] != "PATCH"){
             return [];
         }
         $raw_data = file_get_contents("php://input");
         return json_decode($raw_data, true);
+    }
+
+    public function get_header(string $key):string {
+        $key = strtoupper($key);
+        $key = str_replace("-", "_", $key);
+        if(isset($_SERVER["HTTP_{$key}"])){
+            return $_SERVER["HTTP_{$key}"];
+        }
+        return "";
     }
 }
