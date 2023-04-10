@@ -61,13 +61,16 @@ class Router {
         $regex = preg_replace("/\{([a-zA-Z0-9_]+)\}/", "([a-zA-Z0-9_]+)", $route);
         // escape slash in regex
         $regex = str_replace("/", "\/", $regex);
-        preg_match_all("/^" . $regex . "$/", $path, $param_values);
+        preg_match_all("/" . $regex . "/", $path, $param_values);
         if(count($param_values[0]) === 0){
             return [];
         }
         // shift origin string
         array_shift($param_values);
-        $param_values = $param_values[0];
+        $param_values = array_map(function($value){
+            return $value[0];
+        }, $param_values);
+
 
         // return empty array if param_keys or param_values is not array
         if(!is_array($param_values) || !is_array($param_keys)){
