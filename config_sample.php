@@ -6,4 +6,5 @@ return [
     'DB_CONNECT_STRING' => 'mysql:host=localhost;dbname=test',
     'DB_USERNAME' => 'root',
     'DB_PASSWORD' => 'root',
+    'JWT_SECRET' => 'jwt_secret',
 ];
